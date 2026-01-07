@@ -19,6 +19,15 @@ class ProtonDriveSync < Formula
     bin.install "proton-drive-sync"
   end
 
+  def uninstall
+    # Stop and uninstall service
+    system bin/"proton-drive-sync", "service", "uninstall", "-y"
+    # Clear credentials from keychain
+    system bin/"proton-drive-sync", "auth", "--logout"
+    # Delete all user data
+    system bin/"proton-drive-sync", "reset", "--purge", "-y"
+  end
+
   def caveats
     <<~EOS
       To complete setup, run:
