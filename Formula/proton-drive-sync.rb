@@ -1,17 +1,17 @@
 class ProtonDriveSync < Formula
   desc "Sync local directories to Proton Drive cloud storage"
   homepage "https://github.com/DamianB-BitFlipper/proton-drive-sync"
-  version "0.2.1-rc.1"
+  version "0.2.1-rc.2"
   license "GPL-3.0"
 
   on_macos do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-arm64.tar.gz"
-      sha256 "dc45852ed1f4f32d9018c3ebc12ec6634b7b8a36c664d6d08ef7afbfb0484b22"
+      sha256 "6dba18c67f47894e5454e77b5dc08b5899047db7b61b5819cd40bd5c9bedaca2"
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-x64.tar.gz"
-      sha256 "3f35e9ad2d99ad966e3e140d79dbe049cacf41dc1dfebbd59c1c1f3918db13f0"
+      sha256 "7d72a6a58f4471501e63f881dfb3f0818eb9b48feba976b21ad0c92178570ffc"
     end
   end
 
