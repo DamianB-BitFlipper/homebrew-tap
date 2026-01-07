@@ -1,0 +1,69 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [update-formula]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to update to (e.g., 0.2.1)"
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          # Strip 'v' prefix if present
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Download and calculate SHA256
+        id: sha256
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Download darwin-arm64
+          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-darwin-arm64.tar.gz" -o arm64.tar.gz
+          SHA_ARM64=$(shasum -a 256 arm64.tar.gz | cut -d' ' -f1)
+          echo "sha_arm64=$SHA_ARM64" >> $GITHUB_OUTPUT
+
+          # Download darwin-x64
+          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-darwin-x64.tar.gz" -o x64.tar.gz
+          SHA_X64=$(shasum -a 256 x64.tar.gz | cut -d' ' -f1)
+          echo "sha_x64=$SHA_X64" >> $GITHUB_OUTPUT
+
+      - name: Update formula
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          SHA_ARM64="${{ steps.sha256.outputs.sha_arm64 }}"
+          SHA_X64="${{ steps.sha256.outputs.sha_x64 }}"
+
+          # Update version
+          sed -i "s/version \".*\"/version \"$VERSION\"/" Formula/proton-drive-sync.rb
+
+          # Update SHA256 for arm64 (first sha256 line after on_arm)
+          sed -i "/on_arm/,/sha256/{s/sha256 \".*\"/sha256 \"$SHA_ARM64\"/}" Formula/proton-drive-sync.rb
+
+          # Update SHA256 for x64 (first sha256 line after on_intel)
+          sed -i "/on_intel/,/sha256/{s/sha256 \".*\"/sha256 \"$SHA_X64\"/}" Formula/proton-drive-sync.rb
+
+      - name: Commit and push
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/proton-drive-sync.rb
+          git commit -m "Update proton-drive-sync to v${VERSION}"
+          git push
