@@ -1,4 +1,4 @@
-class ProtonDriveSyncATRc < Formula
+class ProtonDriveSyncRc < Formula
   desc "Sync local directories to Proton Drive cloud storage (pre-release)"
   homepage "https://github.com/DamianB-BitFlipper/proton-drive-sync"
   version "0.2.1-rc.3"

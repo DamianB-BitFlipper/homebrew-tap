@@ -39,7 +39,7 @@ jobs:
 
           # Check if version contains pre-release identifiers (-rc, -alpha, -beta)
           if [[ "$VERSION" == *-rc* ]] || [[ "$VERSION" == *-alpha* ]] || [[ "$VERSION" == *-beta* ]]; then
-            FORMULA="proton-drive-sync@rc.rb"
+            FORMULA="proton-drive-sync-rc.rb"
             IS_PRERELEASE="true"
           else
             FORMULA="proton-drive-sync.rb"
@@ -92,7 +92,7 @@ jobs:
           git add "Formula/$FORMULA"
 
           if [ "$IS_PRERELEASE" = "true" ]; then
-            git commit -m "Update proton-drive-sync@rc to v${VERSION}"
+            git commit -m "Update proton-drive-sync-rc to v${VERSION}"
           else
             git commit -m "Update proton-drive-sync to v${VERSION}"
           fi
