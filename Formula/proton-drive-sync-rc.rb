@@ -7,11 +7,22 @@ class ProtonDriveSyncRc < Formula
   on_macos do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-arm64.tar.gz"
-      sha256 "9f0cb38d09b963d912ab51749b4b2c9b6203ca6b3947ddc84045bf5b5b5c7fc5"
+      sha256 "9f0cb38d09b963d912ab51749b4b2c9b6203ca6b3947ddc84045bf5b5b5c7fc5" # MAC_ARM_SHA256
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-x64.tar.gz"
-      sha256 "afae849ff305c243703e6f17b3b330e8f2a697a1b43b00ec0ac80ea71b81e59f"
+      sha256 "afae849ff305c243703e6f17b3b330e8f2a697a1b43b00ec0ac80ea71b81e59f" # MAC_INTEL_SHA256
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-arm64.tar.gz"
+      sha256 "" # LINUX_ARM_SHA256
+    end
+    on_intel do
+      url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-x64.tar.gz"
+      sha256 "" # LINUX_INTEL_SHA256
     end
   end
 
