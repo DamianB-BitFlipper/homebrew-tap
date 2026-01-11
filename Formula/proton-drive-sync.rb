@@ -7,11 +7,11 @@ class ProtonDriveSync < Formula
   on_macos do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-arm64.tar.gz"
-      sha256 "a6819a214ec5c1c8d1f32c4c3cf039fde294bb309f173d56bedac84967bb1565"
+      sha256 "da9fbca7c6b0482345d88eedd810a83f5af42a277d63acfc8742ce126fc7543e"
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-x64.tar.gz"
-      sha256 "25b0be0cc0c8b50beda7dde38c230fb95b3eabcd8f10716dd9032c85746577ef"
+      sha256 "4b76dc8e5a80a17389f78f7f048d042250bcc30fa0e1a8b30164f884a91119f0"
     end
   end
 
