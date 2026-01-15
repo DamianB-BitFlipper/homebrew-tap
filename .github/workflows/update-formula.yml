@@ -6,8 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to update to (e.g., 0.2.1)"
+        description: 'Version to update to (e.g., 0.2.2)'
         required: true
+      prerelease:
+        description: 'Is this a prerelease?'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -23,10 +28,10 @@ jobs:
       - name: Get version
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            VERSION="${{ github.event.client_payload.version }}"
-          else
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${{ github.event.client_payload.version }}"
           fi
           # Strip 'v' prefix if present
           VERSION="${VERSION#v}"
@@ -35,20 +40,21 @@ jobs:
       - name: Detect pre-release and set formula
         id: formula
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            IS_PRERELEASE="${{ github.event.inputs.prerelease }}"
+          else
+            IS_PRERELEASE="${{ github.event.client_payload.prerelease }}"
+          fi
 
-          # Check if version contains pre-release identifiers (-rc, -alpha, -beta)
-          if [[ "$VERSION" == *-rc* ]] || [[ "$VERSION" == *-alpha* ]] || [[ "$VERSION" == *-beta* ]]; then
-            FORMULA="proton-drive-sync-rc.rb"
-            IS_PRERELEASE="true"
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            FORMULA="proton-drive-sync-prerelease.rb"
           else
             FORMULA="proton-drive-sync.rb"
-            IS_PRERELEASE="false"
           fi
 
           echo "formula=$FORMULA" >> $GITHUB_OUTPUT
           echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
-          echo "Detected formula: $FORMULA (pre-release: $IS_PRERELEASE)"
+          echo "Updating formula: $FORMULA (pre-release: $IS_PRERELEASE)"
 
       - name: Download and calculate SHA256
         id: sha256
@@ -65,21 +71,39 @@ jobs:
           SHA_X64=$(shasum -a 256 x64.tar.gz | cut -d' ' -f1)
           echo "sha_x64=$SHA_X64" >> $GITHUB_OUTPUT
 
+          # Download linux-arm64
+          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-linux-arm64.tar.gz" -o linux-arm64.tar.gz
+          SHA_LINUX_ARM64=$(shasum -a 256 linux-arm64.tar.gz | cut -d' ' -f1)
+          echo "sha_linux_arm64=$SHA_LINUX_ARM64" >> $GITHUB_OUTPUT
+
+          # Download linux-x64
+          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-linux-x64.tar.gz" -o linux-x64.tar.gz
+          SHA_LINUX_X64=$(shasum -a 256 linux-x64.tar.gz | cut -d' ' -f1)
+          echo "sha_linux_x64=$SHA_LINUX_X64" >> $GITHUB_OUTPUT
+
       - name: Update formula
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           SHA_ARM64="${{ steps.sha256.outputs.sha_arm64 }}"
           SHA_X64="${{ steps.sha256.outputs.sha_x64 }}"
+          SHA_LINUX_ARM64="${{ steps.sha256.outputs.sha_linux_arm64 }}"
+          SHA_LINUX_X64="${{ steps.sha256.outputs.sha_linux_x64 }}"
           FORMULA="Formula/${{ steps.formula.outputs.formula }}"
 
           # Update version
           sed -i "s/version \".*\"/version \"$VERSION\"/" "$FORMULA"
 
-          # Update SHA256 for arm64 (first sha256 line after on_arm)
-          sed -i "/on_arm/,/sha256/{s/sha256 \".*\"/sha256 \"$SHA_ARM64\"/}" "$FORMULA"
+          # Update SHA256 for darwin-arm64
+          sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"$SHA_ARM64\"/}" "$FORMULA"
 
-          # Update SHA256 for x64 (first sha256 line after on_intel)
-          sed -i "/on_intel/,/sha256/{s/sha256 \".*\"/sha256 \"$SHA_X64\"/}" "$FORMULA"
+          # Update SHA256 for darwin-x64
+          sed -i "/darwin-x64/{n;s/sha256 \".*\"/sha256 \"$SHA_X64\"/}" "$FORMULA"
+
+          # Update SHA256 for linux-arm64
+          sed -i "/linux-arm64/{n;s/sha256 \".*\"/sha256 \"$SHA_LINUX_ARM64\"/}" "$FORMULA"
+
+          # Update SHA256 for linux-x64
+          sed -i "/linux-x64/{n;s/sha256 \".*\"/sha256 \"$SHA_LINUX_X64\"/}" "$FORMULA"
 
       - name: Commit and push
         run: |
