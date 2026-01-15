@@ -62,48 +62,42 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
 
           # Download darwin-arm64
-          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-darwin-arm64.tar.gz" -o arm64.tar.gz
-          SHA_ARM64=$(shasum -a 256 arm64.tar.gz | cut -d' ' -f1)
-          echo "sha_arm64=$SHA_ARM64" >> $GITHUB_OUTPUT
+          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-darwin-arm64.tar.gz" -o darwin-arm64.tar.gz
+          SHA_MAC_ARM=$(shasum -a 256 darwin-arm64.tar.gz | cut -d' ' -f1)
+          echo "sha_mac_arm=$SHA_MAC_ARM" >> $GITHUB_OUTPUT
 
           # Download darwin-x64
-          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-darwin-x64.tar.gz" -o x64.tar.gz
-          SHA_X64=$(shasum -a 256 x64.tar.gz | cut -d' ' -f1)
-          echo "sha_x64=$SHA_X64" >> $GITHUB_OUTPUT
+          curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-darwin-x64.tar.gz" -o darwin-x64.tar.gz
+          SHA_MAC_INTEL=$(shasum -a 256 darwin-x64.tar.gz | cut -d' ' -f1)
+          echo "sha_mac_intel=$SHA_MAC_INTEL" >> $GITHUB_OUTPUT
 
           # Download linux-arm64
           curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-linux-arm64.tar.gz" -o linux-arm64.tar.gz
-          SHA_LINUX_ARM64=$(shasum -a 256 linux-arm64.tar.gz | cut -d' ' -f1)
-          echo "sha_linux_arm64=$SHA_LINUX_ARM64" >> $GITHUB_OUTPUT
+          SHA_LINUX_ARM=$(shasum -a 256 linux-arm64.tar.gz | cut -d' ' -f1)
+          echo "sha_linux_arm=$SHA_LINUX_ARM" >> $GITHUB_OUTPUT
 
           # Download linux-x64
           curl -sL "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v${VERSION}/proton-drive-sync-linux-x64.tar.gz" -o linux-x64.tar.gz
-          SHA_LINUX_X64=$(shasum -a 256 linux-x64.tar.gz | cut -d' ' -f1)
-          echo "sha_linux_x64=$SHA_LINUX_X64" >> $GITHUB_OUTPUT
+          SHA_LINUX_INTEL=$(shasum -a 256 linux-x64.tar.gz | cut -d' ' -f1)
+          echo "sha_linux_intel=$SHA_LINUX_INTEL" >> $GITHUB_OUTPUT
 
       - name: Update formula
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          SHA_ARM64="${{ steps.sha256.outputs.sha_arm64 }}"
-          SHA_X64="${{ steps.sha256.outputs.sha_x64 }}"
-          SHA_LINUX_ARM64="${{ steps.sha256.outputs.sha_linux_arm64 }}"
-          SHA_LINUX_X64="${{ steps.sha256.outputs.sha_linux_x64 }}"
+          SHA_MAC_ARM="${{ steps.sha256.outputs.sha_mac_arm }}"
+          SHA_MAC_INTEL="${{ steps.sha256.outputs.sha_mac_intel }}"
+          SHA_LINUX_ARM="${{ steps.sha256.outputs.sha_linux_arm }}"
+          SHA_LINUX_INTEL="${{ steps.sha256.outputs.sha_linux_intel }}"
           FORMULA="Formula/${{ steps.formula.outputs.formula }}"
 
           # Update version
           sed -i "s/version \".*\"/version \"$VERSION\"/" "$FORMULA"
 
-          # Update SHA256 for darwin-arm64
-          sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"$SHA_ARM64\"/}" "$FORMULA"
-
-          # Update SHA256 for darwin-x64
-          sed -i "/darwin-x64/{n;s/sha256 \".*\"/sha256 \"$SHA_X64\"/}" "$FORMULA"
-
-          # Update SHA256 for linux-arm64
-          sed -i "/linux-arm64/{n;s/sha256 \".*\"/sha256 \"$SHA_LINUX_ARM64\"/}" "$FORMULA"
-
-          # Update SHA256 for linux-x64
-          sed -i "/linux-x64/{n;s/sha256 \".*\"/sha256 \"$SHA_LINUX_X64\"/}" "$FORMULA"
+          # Update SHA256 for each platform using comment markers
+          sed -i 's/.*# MAC_ARM_SHA256$/      sha256 "'"$SHA_MAC_ARM"'" # MAC_ARM_SHA256/' "$FORMULA"
+          sed -i 's/.*# MAC_INTEL_SHA256$/      sha256 "'"$SHA_MAC_INTEL"'" # MAC_INTEL_SHA256/' "$FORMULA"
+          sed -i 's/.*# LINUX_ARM_SHA256$/      sha256 "'"$SHA_LINUX_ARM"'" # LINUX_ARM_SHA256/' "$FORMULA"
+          sed -i 's/.*# LINUX_INTEL_SHA256$/      sha256 "'"$SHA_LINUX_INTEL"'" # LINUX_INTEL_SHA256/' "$FORMULA"
 
       - name: Commit and push
         run: |

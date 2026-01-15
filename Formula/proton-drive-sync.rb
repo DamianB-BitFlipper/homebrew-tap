@@ -7,22 +7,22 @@ class ProtonDriveSync < Formula
   on_macos do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-arm64.tar.gz"
-      sha256 "da9fbca7c6b0482345d88eedd810a83f5af42a277d63acfc8742ce126fc7543e"
+      sha256 "da9fbca7c6b0482345d88eedd810a83f5af42a277d63acfc8742ce126fc7543e" # MAC_ARM_SHA256
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-x64.tar.gz"
-      sha256 "4b76dc8e5a80a17389f78f7f048d042250bcc30fa0e1a8b30164f884a91119f0"
+      sha256 "4b76dc8e5a80a17389f78f7f048d042250bcc30fa0e1a8b30164f884a91119f0" # MAC_INTEL_SHA256
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-arm64.tar.gz"
-      sha256 "PLACEHOLDER"
+      sha256 "" # LINUX_ARM_SHA256
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-x64.tar.gz"
-      sha256 "PLACEHOLDER"
+      sha256 "" # LINUX_INTEL_SHA256
     end
   end
 
