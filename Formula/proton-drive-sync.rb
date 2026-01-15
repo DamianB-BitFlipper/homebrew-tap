@@ -18,11 +18,11 @@ class ProtonDriveSync < Formula
   on_linux do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-arm64.tar.gz"
-      sha256 "" # LINUX_ARM_SHA256
+      sha256 "3a7555ff04cc9bd7215370e0cf6af477c972aa4e9f8dbeead5fc1cfc0758199c" # LINUX_ARM_SHA256
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-x64.tar.gz"
-      sha256 "" # LINUX_INTEL_SHA256
+      sha256 "ab83d88fc1b811e8fbb43dbe29aae21c72cbc7022099e7ca50b18c3f572dbf13" # LINUX_INTEL_SHA256
     end
   end
 
