@@ -1,28 +1,28 @@
 class ProtonDriveSyncPrerelease < Formula
   desc "Sync local directories to Proton Drive cloud storage (pre-release)"
   homepage "https://github.com/DamianB-BitFlipper/proton-drive-sync"
-  version "0.2.3-beta.1"
+  version "0.2.3-beta.2"
   license "GPL-3.0"
 
   on_macos do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-arm64.tar.gz"
-      sha256 "0f1782abb6236ef29f47154949ceab6cb778ec9d0fee79948bf4951f7c8604b2" # MAC_ARM_SHA256
+      sha256 "16a6d016b15e5e7cfbe7d93144854c7278812650bfa4572e1698e5493046bee9" # MAC_ARM_SHA256
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-darwin-x64.tar.gz"
-      sha256 "eed306b40aa86d8d926b6579bd43cb4cf7338deb2caba6ebbdae887280c0e722" # MAC_INTEL_SHA256
+      sha256 "6e274b0a1b85267c6e43f962137316805e67d41c17234661672cde94a6305656" # MAC_INTEL_SHA256
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-arm64.tar.gz"
-      sha256 "9afa2ee23550b1190ae742117e12f2d5ffb4c7a59c3ba0bda3cac05b3a83ba1c" # LINUX_ARM_SHA256
+      sha256 "f261616275677cd29c7e9d6fec0d4f9f3d158ff1cedaf6ae01f17a494268095a" # LINUX_ARM_SHA256
     end
     on_intel do
       url "https://github.com/DamianB-BitFlipper/proton-drive-sync/releases/download/v#{version}/proton-drive-sync-linux-x64.tar.gz"
-      sha256 "00deed06f5309f6e1f311ceb71964049cf7dbff7eb12ebcbca04fa44683067f0" # LINUX_INTEL_SHA256
+      sha256 "0bbb7b2599a2ac36e15aab9ce37406f3c2f372b6d4aacd41d9b8753a85cf3e3f" # LINUX_INTEL_SHA256
     end
   end
 
